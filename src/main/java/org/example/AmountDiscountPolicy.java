@@ -1,11 +1,13 @@
 package org.example;
 
-public class AmountDiscountPolicy extends DiscountPolicy{
+import java.util.List;
+
+public class AmountDiscountPolicy extends DefaultDiscountPolicy{
 
     private Money discountAmount;
 
     public AmountDiscountPolicy(Money discountAmount, DiscountCondition... conditions) {
-        super(conditions);
+        super(List.of(conditions));
         this.discountAmount = discountAmount;
     }
 

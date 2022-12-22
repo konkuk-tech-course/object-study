@@ -1,11 +1,13 @@
 package org.example;
 
-public class PercentDiscountPolicy extends DiscountPolicy{
+import java.util.List;
+
+public class PercentDiscountPolicy extends DefaultDiscountPolicy{
 
     private double percent;
 
     public PercentDiscountPolicy(double percent, DiscountCondition... conditions) {
-        super(conditions);
+        super(List.of(conditions));
         this.percent = percent;
     }
 

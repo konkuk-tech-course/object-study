@@ -26,5 +26,7 @@ public class Main {
                 )
             );
 
+        Movie starwars = new Movie("스타워즈", Duration.ofMinutes(210), Money.wons(10000), new NoneDiscountPolicy());
+
     }
 }
