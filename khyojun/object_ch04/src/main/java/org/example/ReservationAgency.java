@@ -15,10 +15,11 @@ public class ReservationAgency {
             else{
                 discountable = condition.getSequence() == screening.getSequence();
             }
+            if(discountable){
+                break;
+            }
         }
-        if(discountable){
-            break;
-        }
+
 
 
         Money fee;

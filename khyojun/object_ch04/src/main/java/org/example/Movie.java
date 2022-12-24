@@ -1,6 +1,7 @@
 package org.example;
 
 import java.time.Duration;
+import java.util.List;
 
 public class Movie {
     private String title;
