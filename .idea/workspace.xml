@@ -6,11 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="554ada5d-ebe5-463d-983d-2bae87835e63" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/DiscountCondition.java" beforeDir="false" afterPath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/DiscountCondition.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/Money.java" beforeDir="false" afterPath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/Money.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/Movie.java" beforeDir="false" afterPath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/Movie.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/ReservationAgency.java" beforeDir="false" afterPath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/ReservationAgency.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/Screening.java" beforeDir="false" afterPath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/Screening.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/khyojun/object_ch04/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/khyojun/object_ch04/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,7 +112,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1671860829852</updated>
-      <workItem from="1671860831833" duration="3630000" />
+      <workItem from="1671860831833" duration="5848000" />
     </task>
     <servers />
   </component>
