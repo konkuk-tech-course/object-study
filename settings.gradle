@@ -1,2 +1,4 @@
 rootProject.name = 'objectCh02'
+include 'khyojun:object_ch04'
+findProject(':khyojun:object_ch04')?.name = 'object_ch04'
 
