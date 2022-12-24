@@ -5,32 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="554ada5d-ebe5-463d-983d-2bae87835e63" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/.idea/gradle.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/.idea/khyojun.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/object_ch02/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/object_ch02/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/object_ch02/.idea/gradle.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/object_ch02/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/object_ch02/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/khyojun/object_ch02/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/khyojun/object_ch02/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/DiscountCondition.java" beforeDir="false" afterPath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/DiscountCondition.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/Money.java" beforeDir="false" afterPath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/Money.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/Movie.java" beforeDir="false" afterPath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/Movie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/ReservationAgency.java" beforeDir="false" afterPath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/ReservationAgency.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/Screening.java" beforeDir="false" afterPath="$PROJECT_DIR$/khyojun/object_ch04/src/main/java/org/example/Screening.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,6 +64,9 @@
       <recent name="C:\Users\nando\object-study\khyojun\object_ch04\src\main\java\org\example" />
       <recent name="C:\Users\nando\object-study\khyojun\object_ch04" />
     </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.example.rectangle_right_example" />
+    </key>
   </component>
   <component name="RunManager" selected="애플리케이션.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
@@ -133,7 +116,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1671860829852</updated>
-      <workItem from="1671860831833" duration="1993000" />
+      <workItem from="1671860831833" duration="3630000" />
     </task>
     <servers />
   </component>
