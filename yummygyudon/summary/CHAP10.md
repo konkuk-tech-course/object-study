@@ -142,3 +142,177 @@ Override 시, `super`를 통해 부모 메서드의 내용을 상속받아 사�
  
 <br/>
 
+## 문제 해결
+아쉽게도 상속을 활용함에 있어 취약한 기반 클래스를 문제를 완전히 없앨 수는 없지만<br/>
+어느 정도까지 위험을 완화시키는 것은 가능하다.
+
+그 문제 해결의 열쇠는 이번에도 어김없이 " **추상화** "이다.
+
+### 추상화 의존
+강한 결합도로 인해 변경될 가능성이 높아지는 현상에 대한 일반적인 해결법은
+자식 클래스가 부모 클래스의 구현이 아닌 추상화에 의존하도록 만드는 것이다.
+
+즉, 부모 클래스와 자식 클래스 모두 추상황에 의존하도록 하는 것이 좋다.
+
+- 두 메서드가 유사해 보인다면 "**차이점**"을 <u>**메서드**로 추출</u>한다.<br/>
+  메서드 추출을 통해 두 메서드를 동일한 형태로 보이도록 만들 수 있다.
+
+
+- 부모 클래스의 코드를 하위로 내리지 말고 **자식 클래스의 코드**를 <u>**상위**로 올려야 한다</u>.<br/>
+  부모 클래스의 구체적인 메서드를 자식 클래스로 내리는 것보다<br/>
+  **자식 클래스**의 <u>**추상적**인 메서드를 **부모 클래스로 올리는 것**</u>이 **재사용성**과 **응집도** 측면에서 뛰어난 결과를 얻을 수 있다.
+
+### Extract Difference to Method (차이를 메서드로 추출)
+직전에 언급했듯이<br/>
+가장 먼저 중복 코드 안에서 차이점을 별도의 메서드로 추출하는 것이다.
+
+즉, "변하는 것으로부터 변하지 않는 것을 분리하라." / "변하는 부분을 찾고 이를 캡슐화하라." 라는 조언에 대해<br/>
+메서드 수준으로 실현시키는 것이다.
+
+```java
+// Class A
+public Money calculateFee() {
+    Money result = Money.ZERO;
+    
+    // 인스턴스 변수로 Money amount, Duration seconds, List<Call> calls 가 있다.
+    for(Call call : calls) {
+        result = result.plus(amount.times(call.getDuration().getSeconds() / seconds.getSeconds()));
+    }
+    return result;
+}
+
+// Class B
+public Money calculateFee() {
+    Money result = Money.ZERO;
+
+    // static 상수로 LATE_NIGHT_HOUR = 22가 있다.
+    // 인스턴스 변수로 Money nightlyAmount, Money regularAmount, Duration seconds, List<Call> calls 가 있다.
+    for(Call call : calls) {
+        if(call.getForm().getHour() >= LATE_NIGHT_HOUR){
+            result=result.plus(
+                nightlyAmount.times(call.getDuration().getSeconds()/seconds.getSeconds())
+            );
+        } else {
+            result=result.plus(
+                regularAmount.times(call.getDuration().getSeconds()/seconds.getSeconds())
+            );
+        }
+    }
+    return result;
+}
+```
+위와 같이 유사해보이는 메서드가 있을 경우,<br/>
+다른 부분만 별도의 메서드로 추출하는 것이다.
+
+```java
+// Class A & Class B 통일화 메서드(퍼블릭 인터페이스)
+public Money calculateFee(){
+    Moeny result = Money.ZERO;
+
+    for(Call call : calls) {
+        result = result.plus(calculateCallFee(call));
+    }
+    return result;
+}
+
+// Class A 의 calculateFee()
+private Money calculateCallFee(Call call){
+    return amount.times(call.getDuration().getSeconds() / seconds.getSeconds());
+}
+// Class A 의 calculateFee()
+private Money calculateCallFee(Call call){
+    if(call.getForm().getHour() >= LATE_NIGHT_HOUR){
+        return nightlyAmount.times(call.getDuration().getSeconds()/seconds.getSeconds());
+    } else {
+        return regularAmount.times(call.getDuration().getSeconds()/seconds.getSeconds());
+    }
+}
+```
+
+### 중복 코드는 부모 클래스로
+위 예시를 그대로 사용한다면<br/>
+다음 순서로 해야할 작업은 부모 클래스에 올리는 작업이다.
+
+공통 부분은 퍼블릭 인터페이스로 설정하고<br/>
+차이에 대하여 추출된 메서드인 `calculateCallFee(Call call)`을 추상메서드로 만들면 된다.
+
+```java
+// 클래스 구조
+public abstract class AbstractPhone{}
+public class Phone extends AbstractPhone {}
+public class NightlyDiscountPhone extends AbstractPhone {}
+```
+```java
+// 클래스 구조
+public abstract class AbstractPhone{
+  private List<Call> calls = new ArrayList<>();
+  
+  public Money calculateFee(){
+    Moeny result = Money.ZERO;
+
+    for(Call call : calls) {
+      result = result.plus(calculateCallFee(call));
+    }
+    return result;
+  }
+  
+  abstract Money calculateCallFee(Call call);
+}
+public class Phone extends AbstractPhone {
+  private Money amount ;
+  private Duration seconds ;
+
+  // ...(Constructor)
+
+  @Override
+  protected Moeny calculateCallFee(Call call){
+    return amount.times(call.getDuration().getSeconds() / seconds.getSeconds());
+  }
+}
+public class NightlyDiscountPhone extends AbstractPhone {
+  private static final int LATE_NIGHT_HOUR = 22;
+  
+  private Money nightlyAmount ;
+  private Money regularAmount ;
+  private Duration seconds ;
+    
+  // ...(Constructor)
+  
+  @Override
+  protected Moeny calculateCallFee(Call call){
+    if(call.getForm().getHour() >= LATE_NIGHT_HOUR){
+      return nightlyAmount.times(call.getDuration().getSeconds()/seconds.getSeconds());
+    } 
+    return regularAmount.times(call.getDuration().getSeconds()/seconds.getSeconds())
+  }  
+}
+```
+이와 같이 자식 클래스들 사이의 공통점을 부모 클래스로 옮김으로써<br/>
+실제 코드를 기반으로 상속 계층을 구성할 수 있고<br/>
+이에 따라 설계는 추상화에 의존하게 된 것이다.
+
+자식 클래스 뿐만 아니라<br/>
+부모 클래스도 자신의 내부 구현 추상 메서드를 호출하기 때문에 추상화에 의존하게 되는 구조이다.
+
+그에 따라<br/>
+부모 클래스를 상속받는 새로운 클래스가 추가된다면 <br/>
+다른 클래스를 수정할 필요 없이 `calculateCallFee`메서드만 오버라이딩하면 된다.<br/>
+즉, 확장에는 열려 있고 수정에는 닫혀 있기에 "**개방-폐쇄 원칙**" 또한 준수하게 되는 것이다.
+
+### 의도를 드러내는 네이밍
+위 예시에서 아쉬운 점이 있다면<br/>
+바로 클래스들의 이름이다.
+
+추상화와 같은 개념의 명칭이 객체 클래스 이름으로 사용되는 것은 <br/>
+해당 클래스의 내용을 명시적으로 표현하지 않기 때문에 좋은 이름이 아니다.
+
+또한 부모와 자식 관계로 확장할 때도<br/>
+이름이 어느정도 **관계를 파악하기 용이**해야 한다.
+
+그에 따라 위 예시들의 이름을 다시 바꿔본다면 아래와 같이 바꾸는 것이 바람직하다.
+- `AbstractPhone` → `Phone`
+- `Phone` → `RegularPhone`
+- `NightlyDiscountPhone` → `NightlyDiscountPhone`
+
+<br/>
+
