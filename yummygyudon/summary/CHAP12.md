@@ -280,7 +280,7 @@ public class GradeLecture extends Lecture {
 - " 명시적인 타입 변환 없이 " <br/>**부모 클래스 타입 참조 변수**에 <u>자식 클래스 인스턴스 **대입**</u> 허용<br/>& **부모 클래스 타입 파라미터**에 <u>자식 클래스 인스턴스 **전달**</u> 허용
   - 단, 반대로 `부모 클래스 인스턴스` → `자식 클래스 타입 참조 변수 / 자식 클래스 타입 매개변수` 의 경우에는 **명시적인 <u>타입 캐스팅**</u>이 필요<br/> == "**다운 캐스팅(Down-Casting)**"
     - ```java
-      Lecture lecture = new GradeLecture(...)
+      Lecture lecture = new G임radeLecture(...)
       GradeLecture gradeLecture = (GradeLecture)lecture ;
       ```
 
@@ -428,9 +428,100 @@ public class GradeLecture extends Lecture {
 
 ---
 ## 상속 vs 위임
+> - _<u>동일한 타입의 객체 참조</u>에게 <u>동일한 메시지를 전송</u>하더라도_ <br/>" `self` **참조가 가리키는 객체의 클래스**가 무엇이냐 "에 따라 <u>메서드 탐색 문맥이 달라짐</u> 
+> - **동적 문맥의 흐름** : 자식 클래스에서 **부모 클래스로** <u>`self` 참조를 전달</u>하는 매커니즘
 
+### 위임 & `self` 참조
+- `self` 참조 : **항상** 메시지를 **수신한 객체** 
+  - "**메세드 탐색**" 중 → 자식 클래스 & 부모 클래스 인스턴스들이 <u>모두 동일한 `self` **참조 공유**</u>
+
+자식 클래스의 메서드이든 부모 클래스의 메서드이든
+실행되는 메서드가 <u>특**정 클래스 메서드가 아닐수도** 있다</u>는 것을 **명시**하는 의미와 다를바 없다.
+
+→ `self` 참조로부터 메서드 탐색 과정을 통해<br/>
+**자신이 수신한 메시지를** <u>그대로 다음 탐색 대상에게 동일하게 **메시지를 전달**</u>한다.
+
+즉, "자신이 정의하지 않거나 처리할 수 없는 속성 또는 메서드의 <u>탐색 과정을 다른 객체로 이동 시키는 것</u>"<br/>
+== " **위임(Delegation)** "
+
+<br/>
+
+> - **포워딩** : `self` 참조 전달 ❌
+>   - 단순히 코드 재사용을 위한 경우
+> - **위임** : `self` 참조 전달 ⭕️
+>   - 클래스를 이용한 상속 관계를 <u>객체 사이의 **합성관계**</u>로 대체 → "**다형성**" 구성
+> 
+> ※ "상속" → **자식 클래스로 선언**하면 <u>자동으로 실행 시</u>에 인스턴스들 사이에서<br/> "`self` 참조가 전달 및 동일 문맥 공유 :: **위임** "를 하게 해준다.
+
+
+<br/>
+
+### "프로토 타입" 기반 _O.O.L ( Object-Oriented Language )_
+
+모든 예제가 클래스 기반 객체지향 언어인 Java에 초점이 맞춰져있어 알지 못했겠지만<br/>
+위임을 포함한 **객체 지향 패러다임**은 <u>클래스가 없더라도 **구현이 가능**</u>하다.
+
+> 📍 **핵심**
+> - 만약 " _객체의 개인적인 특징이 메시지 응답에 부적합하다면_ "<br/> 객체는 응답할 수 있는지 여부를 알기 위해 <u>**메시지**를 "**프로토 타입**"에 **포워딩**</u>한다.
+> 
+> 
+> - 메시지가 계속해서 위임된다면 <br/> <u>변수의 값에 대한 모든 **질문**</u> 이나 <u>메시지에 응답할 모든 **요청**들</u>은 메시지를 위임했던 <br/> **원래의 객체**에 의해 **먼저 추론**되어야 한다.
+
+☞ `JavaScript` 예시 
+```javascript
+function  Lecture(name, scores) {
+    this.name = name ;
+    this.scores = scores ;
+}
+
+/**
+ * 여기에서의 prototype은
+ * 최상위 객체 타입인 Object로 취급
+ */
+Lecture.prototype.stats = function () {
+    return "Name: " + this.name + ", Evaluation Method: " + this.getEvaluationMethod() ;
+}
+
+Lecture.prototype.getEvaluationMethod = function () {
+  return "Pass or Fail" 
+}
+
+
+function  GradeLecture(name, canceled, scores) {
+  Lecture.call(this, name, scores) ;
+  this.canceled = canceled ;
+}
+
+/**
+ * GradeLecture의 prototype을 "Lecture 인스턴스"로 할당
+ * "prototype"이라는 연결고리로 상속 관계 형성
+ */
+GradeLecture.prototype = new Lecture();
+
+GradeLecture.prototype.constructor = GradeLecture ;
+
+/**
+ * 오버라이딩
+ */
+GradeLecture.prototype.getEvaluationMethod = function () {
+  return "Grade"
+}
+```
+
+클래스 없이 **프로토타입 체인**을 통해 " <u>**자동적**으로 **메시지 위임**이 발생</u>하는 구조 "가 형성된다.<br/>
+( _탐색 과정은 클래스 기반 객체 지향 언어의 경우와 다를 바 없다._ )
+
+즉, 객체들 사이에서 다형성을 형성하기 위해서 필요한 것은<br/>
+클래스가 아닌 "**관계**"와 "**메시지 위임**"인 것이다.
 
 <br/>
 <br/>
 
 ---
+
+## ⭐️ 한 마디 ⭐️
+> "객체 지향"은 **"객체"를 지향하는 것**
+> - 클래스(Class) : 객체를 편하게 정의하고 생성하기 위해 제공되는 프로그래밍 구성 요소
+>   - _클래스 없이도 객체 사이의 협력 관계 구축 가능 ([프로토 타입 기반 언어](#-프로토-타입--기반-ool--object-oriented-language-))_
+> 
+> ※ " <u>**메세지**</u> " & " <u>**협력**</u> " 이 가장 중요
