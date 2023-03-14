@@ -54,11 +54,202 @@
 ---
 
 ## "상속"의 양면성
+상속의 목적은 코드 재사용이 아닌<br/>
+프로그램을 구성하는 개념들을 기반으로<br/>
+<u>다형성을 기능하게 하는 **타입 계층</u>을 구축**하기 위한 것
+
+**＜ 상속 매커니즘 유관 개념 ＞**
+1. [업 캐스팅 & 동적 바인딩](#업캐스팅--동적-바인딩--up-casting--dynamic-binding-)
+2. [동적 메서드 탐색](#동적-메서드-탐색--다형성)
+3. [`self` 참조 & `super` 참조]()
+
+#### ※ 통합 예제
+- 부모 클래스 `Lecture`
+  - 점수 기반 합불 여부에 대한 연산과 그에 필요한 데이터들을 가짐
+```java
+/**
+ * 부모 클래스 Lecture
+ */
+public class Lecture {
+  private int passLimit;
+  private String title;
+  private List<Integer> scores;
+
+  public Lecture(String title, int passLimit, List<Integer> scores) {
+    this.title = title;
+    this.passLimit = passLimit;
+    this.scores = scores;
+  }
+
+  public List<Integer> getScores() {
+    return Collections.unmodifiableList(scores);
+  }
+
+  // 평균 연산
+  public double average() {
+    return scores.stream()
+            .mapToInt(Integer::intValue)
+            .average().orElse(0);
+  }
+
+  // 결과 반환
+  private String summary() {
+    return String.format("Pass : %d Fail : %d", passCount(), failCount()) ;
+  }
+
+  private long passCount() {
+    return scores.stream()
+            .filter(score -> score >= passLimit)
+            .count();
+  }
+
+  private long failCount() {
+    return scores.size() - passCount();
+  }
+}
+
+```
+- 자식 클래스 `GradeLecture`
+  - 점수 기반 등급 평가 연산과 그에 필요한 데이터를 가짐
+  - 등급 데이터 클래스 : `Grade`
+```java
+public class Grade {
+  private String name;
+  private int upper, lower;
+
+  public Grade(String name, int upper, int lower) {
+    this.name = name;
+    this.upper = upper;
+    this.lower = lower;
+  }
+
+  public String getName() {
+    return name;
+  }
+  public boolean isSameNameWith(String name) {
+      return this.name.equals(name) ;
+  }
+  public boolean isIncludeIn(int score) {
+      return score >= lower && score <= upper ;
+  }
+}
+
+/**
+ * 자식 클래스 GradeLecture 
+ * - 생성시, 부모 클래스와 동일하게 가지는 데이터 등록
+ */
+public class GradeLecture extends Lecture {
+  private List<Grade> grades ;
+  
+  public GradeLecture(String name, int passLimit, List<Grade> grades, List<Integer> scores) {
+      super(name, passLimit, scores) ;
+      this.grades = grades;
+  }
+  
+  @Override
+  public String summary() {
+      return super.summary() + " | " + gradeStatistics() ;
+  }
+  
+  private String gradeStatistics() {
+      return grades.stream()
+              .map(grade -> format(grade))
+              .collect(joining(" ")) ;
+  }
+  private String format(Grade grade) {
+      return String.format("%s:%d", grade.getName(), gradeCount(grade)) ;
+  }
+  // 부모 클래스의 getScores 를 그대로 이어받아 쓸 수 있음.
+  private long gradeCount(Grade grade) {
+      return getScores().stream()
+              .filter(grade::isIncludeIn)
+              .count();
+  }
+}
+```
+
+중요한 점은 `summary()`와 같은 메서드는 두 클래스에서 시그니처가 완전히 동일한데<br/>
+부모 클래스와 자식 클래스에 <u>동일 시그니처의 메서드가 있다면</u><br/>
+"**자식 클래스**의 메서드의 **우선순위가 더 <u>높다</u>**."
+
+즉, `Lecture lecture = new GradeLecture(...)`의 방식으로 업캐스팅이 가능한데<br/>
+만약 해당 `Lecture`에서 `summary()` 메서드를 실행시킨다면<br/>
+`Pass : %d Fail : %d | %s:%d %s:%d` 형식으로 반환되는 것이다.
+
+이와 같이 상속받은 메서드와 <u>**동일한 시그니처 메서드를 재정의**</u>하여<br/>
+부모 클래스의 구현을 <u>새로운 구현으로 대체하는 것</u>을 "**메서드 오버라이딩**"이라 하는 것이다.
+
+더 나아가 <br/>
+부모 클래스에는 없던 **새로운 메서드를 추가하는 것**도 가능하며<br/>
+<u>부모 클래스에 정의된 동일한 이름을 가지지만 서로 다른 시그니처의 메서드를 정의</u>( == **메서드 오버로딩** )할 수도 있다.
+
+```java
+public class GradeLecture extends Lecture {
+    /**
+     * 오버로딩 Overloading
+     * - Lecture 클래스에 있는 average 메서드와는 다른 시그니처
+     */
+    public double average(String gradeName) {
+      return grades.stream()
+              .filter(each -> each.isSameNameWith(gradeName))
+              .map(this.gradeAverage)
+              .orElse(0d);
+    }
+
+    /**
+     * 부모 클래스에는 없는 새로운 메서드 정의
+     */
+    public double gradeAverage(Grade grade) {
+        return getScores().stream()
+                .filter(grade::isIncludeIn)
+                .mapToInt(Integer::intValue)
+                .average()
+                .orElse(0);
+    }
+}
+```
+<br/>
 
 ### ✵ 데이터 관점
+> "부모 클래스에서 정의한 **모든 데이터**"를 자식 클래스의 인스턴스에 자동으로 포함시킬 수 있다.
+
+메모리 상에 생성된 GradeLecture의 인스턴스는 부모 클래스인 Lecture의 구성을 그대로 포함하고 있는 형태로 존재한다.
+
+그에 따라 `Lecture lecture = new GradeLecture(...)`의 형식에서<br/>
+`lecture`는 **`GradeLecture` 인스턴스를 참조**하기 때문에
+
+내부에 내포하고 있는 `Lecture`에 직접 접근할 수 없으며<br/>
+<u>해당 GradeLecture 인스턴스가 가지고 있는</u> **부모 클래스 Lecture 인스턴스의 자원들**은<br/>
+**GradeLecture 객체만**이 **내부에서 접근 및 활용**이 가능하게 된다.
+
+<br/>
 
 ### ✵ 행동 관점
+> "부모 클래스에서 정의한 **일부 메서드**"를 자식 클래스의 인스턴스에 자동으로 포함시킬 수 있다.
+> 
+> ✵ _단, 구체적인 구현 방법 / 메모리 구조는 언어나 플랫폼에 따라 다를 수 있다는 점을 주의하자._
 
+- 부모 클래스의 모든 `public` 메서드는 <u>**자식 클래스의 퍼블릭 인터페이스**에 포함</u>
+  - <u>부모 클래스 인스턴스에게 전송 가능</u>한 메시지 → **자식 클래스 인스턴스에게도 전송 가능**
+  - _Override를 하지 않더라도 부모 클래스 인스턴스에게 전송하던 메시지를 받으면 처리가 가능_
+
+**런 타임**에 시스템은 <u>자식 클래스에 정의되지 않은 메서드</u>가 있을 경우,<br/>
+" **부모 클래스 안**에서 탐색 "을 하는 구조이다.
+
+<br/> 
+
+#### ‼️ 메모리 할당 ‼️
+- **[[ 객체 ]]** : **서로 다른 상태**를 저장 → <u>각 인스턴스별로 **독립적인 메모리**</u> 할당
+
+
+- **[[ 메서드 ]]** : 동일한 클래스의 인스턴스끼리 **공유 가능** → <u>최초 메모리 로드 이후</u>, 각 인스턴스별로 **포인터** 부여
+
+**포인터**를 갖는 구조를 자세히 살펴보면<br/>
+각 인스턴스의 클래스는 모두 자신의 **부모 클래스에 대한 포인터**를 가지게 되는데<br/>
+이와 같이 포인터를 활용하여 <u>클래스의 **상속 계층**을 순차적으로 따라올라가며 탐색</u>하는 것이다.<br/>
+(_이러한 구조때문에 마치 자식 클래스에 부모 클래스의 복사본을 가지고 있는 것처럼 보이는 것_)
+
+- "**최상위 부모 클래스인** `Object`"를 마지막으로 **상속 계층은 끝**
 
 <br/>
 <br/>
