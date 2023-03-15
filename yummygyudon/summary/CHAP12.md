@@ -280,7 +280,7 @@ public class GradeLecture extends Lecture {
 - " 명시적인 타입 변환 없이 " <br/>**부모 클래스 타입 참조 변수**에 <u>자식 클래스 인스턴스 **대입**</u> 허용<br/>& **부모 클래스 타입 파라미터**에 <u>자식 클래스 인스턴스 **전달**</u> 허용
   - 단, 반대로 `부모 클래스 인스턴스` → `자식 클래스 타입 참조 변수 / 자식 클래스 타입 매개변수` 의 경우에는 **명시적인 <u>타입 캐스팅**</u>이 필요<br/> == "**다운 캐스팅(Down-Casting)**"
     - ```java
-      Lecture lecture = new G임radeLecture(...)
+      Lecture lecture = new G임radeLecture(...);
       GradeLecture gradeLecture = (GradeLecture)lecture ;
       ```
 
