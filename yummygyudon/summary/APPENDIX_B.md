@@ -81,9 +81,96 @@
 <br/>
 
 ### 추상클래스
+> "<u>**추상 클래스**를 상속</u>받는 **구체 클래스**" 추가 → 타입 계층 구현
+
+#### 💡구체 클래스 상속 vs 추상 클래스 상속
+1. 의존하는 대상의 **"추상화 정도"**
+   - **구체 클래스 상속** → 내부 구현에 강한 결속
+   - **추상 클래스 상속** → 추상 메서드에 시그니처에만 의존 (내부 구현 의존 ❌)
+     - 오직 추상 메서드 `오버라이딩`에 의존 :: " `의존성 역전의 원칙` "<br/><br/>
+   - 모든 자식 클래스들은 항상 추상 메서드의 시그니처 준수 
+     - 유연 & 변화에 안정적인 설계
+   - 추상화 ⬆ == 결합도 ⬇ == 변경에 의한 영향 ⬇ <br/><br/><br/>
+2. 상속을 사용하는 "**의도**"
+   - 구체 클래스 상속 → `코드 재사용`
+     - _확장에 닫혀있음_
+   - 추상 클래스 상속 → `상속`
+     - 자기 자신의 **인스턴스 생성** 불가능
+     - 오직 <u>**자식 클래스** 추가</u>를 위해 존재<br/><br/>
+   - 상속 **계층 확장** 용이 & **결합도** 부작용 방지
+
+<br/>
 
 ### 추상 클래스 + 인터페이스
+> :: " `골격 구현 추상 클래스` ( _Skeletal Implementation Abstract Class_ ) "
 
+- `인터페이스` → **"다중 상속"** 문제 해결
+- `추상 클래스` → **"중복 코드"** 방지
+
+```java
+import domain.Money;
+import domain.Screening;
+
+public interface DiscountPolicy {
+    Money calculateDiscountAmount(Screening screening);
+}
+
+/**
+ * 골격 구현 추상 클래스 `DefaultDiscountPolicy`
+ */
+public abstract class DefaultDiscountPolicy implements DiscountPolicy {
+    private List<DiscountPolicy> conditions = new ArrayList<>();
+
+    public DefaultDiscountPolicy(DiscountPolicy... conditions) {
+        this.conditions = Arrays.asList(conditions);
+    }
+
+    @Override
+    public Money calculateDiscountAmount(Screening screening) {
+        for (DiscountPolicy policy : conditions) {
+            if(policy.isSatisfiedBy(screening)) {
+                return getDiscountAmount(screening) ;
+            }
+        }
+        return screening.getMovieFee();
+    }
+    
+    abstract protected Money getDiscountAmount(Screening screening);
+}
+
+/**
+ * `calculateDiscountAmount`의 구현 상속 & 인스턴스 변수 상속
+ * - 중복 코드 방지
+ * - 하나의 상속 계층으로 묶을 수 있음
+ * 
+ * 각자 `getDiscountAmount` 에 대해 구현
+ * - 시그니처 동일 :: 의존성 역전 원칙 적용 가능
+ * - 행동 호환 가능 :: 타입 계층 구현
+ */
+public class AmountDiscountPolicy extends DefaultDiscountPolicy {
+}
+public class PercentDiscountPolicy extends DefaultDiscountPolicy {
+}
+```
+<br/>
+
+#### 💡골격 구현 추상 클래스 vs 추상 클래스 
+- [장점] <u>**상속 계층**에 얽매이지 않는</u> 타입 계층 & 코드 <u>중복 제거</u>
+  - 간단한 새로운 구현 방법 추가
+    - 간단하게 새로운 **추상 클래스** 추가 
+  - 손쉬운 인터페이스 추가/삭제
+    - 기존 부모 클래스에서 **새로운 타입**으로 쉽게 **확장**
+
+
+- [단점] **복잡도**가 올라감
+
+<br/>
+
+자칫 복잡도가 올라가 불필요하게 <u>이해용이성이 떨어질</u> 수 있기 때문에<br/>
+**복잡성 절하**가 더 중요하다면<br/>
+타입을 정의하기 위해 인터페이스 / 추상 클래스 **둘 중 하나만 사용**하는 것이 바람직하다.
+- **단일** 상속 계층 **가능** : `클래스`/`추상 클래스`로 타입 정의
+- **단일** 상속 계층 **불가능** : `인터페이스`로 타입 정의
 
 <br/>
 <br/>
